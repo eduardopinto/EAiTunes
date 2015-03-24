@@ -9,6 +9,10 @@ package classes;
  * @author Nuno Santos PG27728
  * 
  */
+
 public abstract class Conteudo {
+    
+    private String autor;
+    
     
 }
