@@ -9,6 +9,6 @@ package classes;
  * @author Nuno Santos PG27728
  * 
  */
-public class Apps extends Conteudo {
+public class App extends Conteudo {
     
 }
