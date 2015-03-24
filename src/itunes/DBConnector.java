@@ -36,7 +36,7 @@ public class DBConnector {
         try {
             connection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
-            throw new RuntimeException(DATABASE_ERROR, e);
+            throw new RuntimeException(DATABASE_ERROR);
         } 
     }
 

@@ -1,4 +1,5 @@
 
+import classes.User;
 import itunes.DBConnector;
 import itunes.EAiTunes;
 
@@ -23,6 +24,8 @@ public class Main {
         
         try {
             itunes.createUser("Nuno", "Gomes");
+            User u = itunes.getUserById(2);
+            System.out.println(u.getFirstName());
         } catch (Exception ex) {
             System.out.println(ex);
         }     

@@ -3,8 +3,7 @@ package itunes;
 import classes.Content;
 import classes.User;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Calendar;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +30,25 @@ public class EAiTunes {
     }
 
     //users
-    public User getUserById(int userId) {
-        return null;
+    public User getUserById(int userId) throws Exception {
+        User user = null;
+        if (databaseConnection.isConnected()) {
+            try {
+
+                String query = "select * from user where userId = " + userId;
+                PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
+                ResultSet result = preparedStatement.executeQuery();
+                if (result.next()) {
+                    user = new User(result.getString("firstName"), result.getString("lastName"));
+                }
+                result.close();
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return user;
     }
 
     public boolean createUser(String firstName, String lastName) throws Exception {
@@ -45,10 +61,9 @@ public class EAiTunes {
                 preparedStatement.setString(1, newUser.getFirstName());
                 preparedStatement.setString(2, newUser.getLastName());
                 preparedStatement.execute();
-                databaseConnection.getConnection().close();
                 added = true;
             } catch (Exception e) {
-               throw new Exception(e); 
+                throw new Exception(e);
             }
         } else {
             throw new Exception(DATABASE_ERROR);
@@ -72,37 +87,37 @@ public class EAiTunes {
     public Content getMusicById(int musicId) {
         return null;
     }
-    
+
     public boolean createMusic() {
         return true;
     }
-    
+
     public boolean updateMusic(int musicId) {
         return true;
     }
-    
+
     //app
     public Content getAppById(int appId) {
         return null;
     }
-    
-     public boolean createApp() {
+
+    public boolean createApp() {
         return true;
     }
-     
+
     public boolean updateApp(int appId) {
         return true;
     }
-    
+
     //video
     public Content getVideoById(int videoId) {
         return null;
     }
-     
+
     public boolean createVideo() {
         return true;
     }
-    
+
     public boolean updateVideo(int videoId) {
         return true;
     }
