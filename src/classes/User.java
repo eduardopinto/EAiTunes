@@ -31,10 +31,12 @@ public final class User {
     }
 
     public void setFirstName(String firstName) throws Exception {
-        if (!isValidName(firstName)) {
+        if (isValidName(firstName)) {
+            this.firstName = firstName;
+        }else{
             throw new Exception(INVALID_FIRST_NAME);
         }
-        this.firstName = firstName;
+        
     }
 
     public String getLastName() {
