@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class DBConnector {
 
     private final static String DATABASE_ERROR = "Cannot connect the database!";
-    
+
     //default parameters
     private final static String DEFAULT_URL = "jdbc:mysql://localhost:3306/mydb";
     private final static String DEFAULT_USERNAME = "root";
@@ -31,24 +31,30 @@ public class DBConnector {
     public DBConnector(String url, String username, String password) {
         this.setConnection(url, username, password);
     }
-    
+
     public final void setConnection(String url, String username, String password) {
         try {
             connection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
             throw new RuntimeException(DATABASE_ERROR, e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ignore) {
-                }
-            }
-        }
+        } 
     }
-    
+
     public boolean isConnected() {
         return connection != null;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException ignore) {
+            }
+        }
     }
 
 }
