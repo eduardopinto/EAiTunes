@@ -42,33 +42,33 @@ public final class User {
     }
 
     public void setLastName(String lastName) throws Exception {
-        if (!isValidName(lastName)) {
+        if (isValidName(lastName)) {
+            this.lastName = lastName;
+        } else {
             throw new Exception(INVALID_LAST_NAME);
         }
-        this.lastName = lastName;
     }
 
     public Content getBuyById(int id) {
-        if (!this.contents.isEmpty()) {
-            return this.contents.get(id);
+        Content content = null;
+
+        if (this.contents.isEmpty()) {
+            content = this.contents.get(id);
         }
-        return null;
+        return content;
     }
 
     public boolean createBuy(int id, Content content) {
-        boolean created = false;
-        
+        boolean created = true;
         this.contents.put(id, content);
-        
-        if(contents.containsKey(id)){
+
+        if (contents.containsKey(id)) {
             created = true;
         }
-        
         return created;
     }
 
     private boolean isValidName(String name) {
         return name != null && !name.trim().equals("");
     }
-
 }

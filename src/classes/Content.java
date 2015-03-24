@@ -29,10 +29,11 @@ public abstract class Content {
     }
 
     public final void setPublisher(String publisher) throws Exception {
-        if (!isValidName(publisher)) {
+        if (isValidName(publisher)) {
+            this.publisher = publisher;
+        } else {
             throw new Exception(INVALID_PUBLISHER_NAME);
         }
-        this.publisher = publisher;
     }
 
     public String getName() {
@@ -40,10 +41,11 @@ public abstract class Content {
     }
 
     public final void setName(String name) throws Exception {
-        if (!isValidName(publisher)) {
+        if (isValidName(publisher)) {
+            this.name = name;
+        }else{
             throw new Exception(INVALID_CONTENT_NAME);
-        }
-        this.name = name;
+        }    
     }
 
     public float getPrice() {
@@ -51,16 +53,17 @@ public abstract class Content {
     }
 
     public final void setPrice(float price) throws Exception {
-        if (!isValidPrice(price)) {
+        if (isValidPrice(price)) {
+            this.price = price;
+        }else{
             throw new Exception(INVALID_PRICE);
-        }
-        this.price = price;
+        } 
     }
 
     private boolean isValidName(String name) {
         return name != null && !name.trim().equals("");
     }
-    
+
     private boolean isValidPrice(float price) {
         return price >= 0.0f;
     }
