@@ -22,6 +22,10 @@ public class Main {
         DBConnector db = new DBConnector();
         EAiTunes itunes = new EAiTunes(db);
         
+        // send app creation request
+        Object[] content = new Object[] { new String("Aplicacao de calculo"), new String("Microsoft"),new String("Excel"), new Float(34)};
+        itunes.createContent("App", content);
+
         try {
             //System.out.println(itunes.createUser("Nuno", "Gomes"));
             System.out.println(itunes.updateUser(15, "Nass", "Gomes"));

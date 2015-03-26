@@ -1,9 +1,8 @@
 package itunes;
 
+import classes.ConcreteCreator;
 import classes.Content;
 import classes.User;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,6 +118,15 @@ public class EAiTunes {
         return loaded;
     }
 
+    /*
+     * Create Content
+    */
+    public void createContent(String contentType, Object[] content)
+    {
+        ConcreteCreator factory = new ConcreteCreator();
+        factory.factoryMethod(contentType, content);
+    }
+            
     //music
     public Content getMusicById(int musicId) {
         return null;
