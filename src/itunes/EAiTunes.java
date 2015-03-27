@@ -3,6 +3,10 @@ package itunes;
 import classes.ConcreteCreator;
 import classes.Content;
 import classes.User;
+import content.App;
+import content.Music;
+import content.Video;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,11 +77,10 @@ public class EAiTunes {
         boolean deleted = false;
         if (databaseConnection.isConnected()) {
             try {
-                if (loadUser(userId)) {
-                    if (this.users.get(userId).delete(databaseConnection)) {                    
-                        this.users.remove(userId);
-                        deleted = true;
-                    }
+                loadUser(userId);
+                if (this.users.get(userId).delete(databaseConnection)) {
+                    this.users.remove(userId);
+                    deleted = true;
                 }
             } catch (Exception e) {
                 throw new Exception(e);
@@ -92,12 +95,11 @@ public class EAiTunes {
         boolean updated = false;
         if (databaseConnection.isConnected()) {
             try {
-                if (loadUser(userId)) {
-                    this.users.get(userId).setFirstName(firstName);
-                    this.users.get(userId).setLastName(lastName);
-                    if (this.users.get(userId).update(databaseConnection)) {
-                        updated = true;
-                    }
+                loadUser(userId);
+                this.users.get(userId).setFirstName(firstName);
+                this.users.get(userId).setLastName(lastName);
+                if (this.users.get(userId).update(databaseConnection)) {
+                    updated = true;
                 }
             } catch (Exception e) {
                 throw new Exception(e);
@@ -108,62 +110,167 @@ public class EAiTunes {
         return updated;
     }
 
-    private boolean loadUser(int userId) throws Exception {
-        boolean loaded = false;
+    private void loadUser(int userId) throws Exception {
         if (!this.users.containsKey(userId)) {
-            if (this.getUserById(userId) != null) {
-                loaded = true;
+            this.getUserById(userId);
+        }
+    }
+
+    private void loadContent(String contentType, int contentId) throws Exception {
+        if (!this.contents.containsKey(contentId)) {
+            switch (contentType) {
+                case "App":
+                    this.getAppById(contentId);
+                    break;
+                case "Music":
+                    this.getMusicById(contentId);
+                    break;
+                case "Video":
+                    this.getVideoById(contentId);
+                    break;
             }
         }
-        return loaded;
     }
 
     /*
      * Create Content
-    */
-    public void createContent(String contentType, Object[] content)
-    {
+     */
+    public void createContent(String contentType, Object[] content) {
         ConcreteCreator factory = new ConcreteCreator();
         factory.factoryMethod(contentType, content);
     }
-            
+
     //music
-    public Content getMusicById(int musicId) {
-        return null;
+    public Content getMusicById(int musicId) throws Exception {
+        Content app = null;
+        if (this.contents.containsKey(musicId)) {
+            app = this.contents.get(musicId);
+        } else {
+            if (databaseConnection.isConnected()) {
+                try {
+                    Content tmp = new Music(musicId);
+                    if (tmp.load(databaseConnection)) {
+                        this.contents.put(tmp.getContentId(), tmp);
+                        app = tmp;
+                    }
+                } catch (Exception e) {
+                    throw new Exception(e);
+                }
+            } else {
+                throw new Exception(DATABASE_ERROR);
+            }
+        }
+        return app;
     }
 
-    public boolean createMusic() {
-        return true;
-    }
+    public boolean updateMusic(int musicId, int duration, String publisher, String name, float price) throws Exception {
+        boolean updated = false;
+        if (databaseConnection.isConnected()) {
+            try {
+                loadContent("Music", musicId);
+                this.contents.get(musicId).setPublisher(publisher);
+                this.contents.get(musicId).setName(name);
+                this.contents.get(musicId).setPrice(price);
+                ((Music) this.contents.get(musicId)).setDuration(duration);
+                if (this.contents.get(musicId).update(databaseConnection)) {
+                    updated = true;
+                }
 
-    public boolean updateMusic(int musicId) {
-        return true;
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return updated;
     }
 
     //app
-    public Content getAppById(int appId) {
-        return null;
+    public Content getAppById(int appId) throws Exception {
+        Content app = null;
+        if (this.contents.containsKey(appId)) {
+            app = this.contents.get(appId);
+        } else {
+            if (databaseConnection.isConnected()) {
+                try {
+                    Content tmp = new App(appId);
+                    if (tmp.load(databaseConnection)) {
+                        this.contents.put(tmp.getContentId(), tmp);
+                        app = tmp;
+                    }
+                } catch (Exception e) {
+                    throw new Exception(e);
+                }
+            } else {
+                throw new Exception(DATABASE_ERROR);
+            }
+        }
+        return app;
     }
 
-    public boolean createApp() {
-        return true;
-    }
-
-    public boolean updateApp(int appId) {
-        return true;
+    public boolean updateApp(int appId, String details, String publisher, String name, float price) throws Exception {
+        boolean updated = false;
+        if (databaseConnection.isConnected()) {
+            try {
+                loadContent("App", appId);
+                this.contents.get(appId).setPublisher(publisher);
+                this.contents.get(appId).setName(name);
+                this.contents.get(appId).setPrice(price);
+                ((App) this.contents.get(appId)).setDetails(details);
+                if (this.contents.get(appId).update(databaseConnection)) {
+                    updated = true;
+                }
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return updated;
     }
 
     //video
-    public Content getVideoById(int videoId) {
-        return null;
+    public Content getVideoById(int videoId) throws Exception {
+        Content app = null;
+        if (this.contents.containsKey(videoId)) {
+            app = this.contents.get(videoId);
+        } else {
+            if (databaseConnection.isConnected()) {
+                try {
+                    Content tmp = new Video(videoId);
+                    if (tmp.load(databaseConnection)) {
+                        this.contents.put(tmp.getContentId(), tmp);
+                        app = tmp;
+                    }
+                } catch (Exception e) {
+                    throw new Exception(e);
+                }
+            } else {
+                throw new Exception(DATABASE_ERROR);
+            }
+        }
+        return app;
     }
 
-    public boolean createVideo() {
-        return true;
-    }
-
-    public boolean updateVideo(int videoId) {
-        return true;
+    public boolean updateVideo(int videoId, String resolution, String publisher, String name, float price) throws Exception {
+        boolean updated = false;
+        if (databaseConnection.isConnected()) {
+            try {
+                loadContent("App", videoId);
+                this.contents.get(videoId).setPublisher(publisher);
+                this.contents.get(videoId).setName(name);
+                this.contents.get(videoId).setPrice(price);
+                ((Video) this.contents.get(videoId)).setResolution(resolution);
+                if (this.contents.get(videoId).update(databaseConnection)) {
+                    updated = true;
+                }
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return updated;
     }
 
     //all conntents - cascade delete
@@ -172,12 +279,52 @@ public class EAiTunes {
     }
 
     //buys
-    public Content getBuyById(int id) {
-        return null;
+    public Content getContentByUserId(int userId, int contentId) throws Exception {
+        Content content = null;
+        if (databaseConnection.isConnected()) {
+            try {
+                loadUser(userId);
+                content = this.users.get(userId).getContentById(contentId);
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return content;
     }
 
-    public boolean createBuy(int id, Content content) {
-        return true;
+    public Collection<Content> getContentsByUserId(int userId) throws Exception {
+        Collection<Content> contents = null;
+        if (databaseConnection.isConnected()) {
+            try {
+                loadUser(userId);
+                contents = this.users.get(userId).getContents();
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return contents;
+    }
+
+    public boolean createBuy(int userId, String contentType, int contentId) throws Exception {
+        boolean added = false;
+        if (databaseConnection.isConnected()) {
+            try {
+                loadContent(contentType, contentId);
+                loadUser(userId);
+                if (this.users.get(userId).buyContent(databaseConnection, this.contents.get(contentId))) {
+                    added = true;
+                }
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return added;
     }
 
 }

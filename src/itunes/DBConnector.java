@@ -20,7 +20,7 @@ public class DBConnector {
     //default parameters
     private final static String DEFAULT_URL = "jdbc:mysql://localhost:3306/mydb";
     private final static String DEFAULT_USERNAME = "root";
-    private final static String DEFAULT_PASSWORD = "";
+    private final static String DEFAULT_PASSWORD = "N699819a";
 
     private Connection connection = null;
 
