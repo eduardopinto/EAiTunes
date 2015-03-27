@@ -23,7 +23,7 @@ public class Main {
         EAiTunes itunes = new EAiTunes(db);
         
         try {
-            itunes.getUserById(16).getAllAppsByUser(db);
+            itunes.getUserById(16).getAllVideosByUser(db);
             
             
             //System.out.println(itunes.createUser("Nuno", "Gomes"));

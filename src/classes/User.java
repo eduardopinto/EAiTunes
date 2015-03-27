@@ -10,8 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -127,7 +125,7 @@ public final class User {
         return deleted;
     }
 
-    public boolean load(DBConnector databaseConnection) throws SQLException {
+    public boolean load(DBConnector databaseConnection) throws SQLException, Exception {
         boolean loaded = false;
         String query = "select * from user where userId = " + userId;
         PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
@@ -136,17 +134,13 @@ public final class User {
         if (result.next()) {
             this.firstName = result.getString("firstName");
             this.lastName = result.getString("lastName");
-            loadContents();
+            loadContents(databaseConnection);
             loaded = true;
             result.close();
         }
         return loaded;
     }
 
-    private boolean loadContents() {
-        return false;
-
-    }
 
     public boolean buyContent(DBConnector databaseConnection, int contentId) throws SQLException {
         boolean added = false;
@@ -161,9 +155,9 @@ public final class User {
         return added;
     }
 
-//    public Map<Integer, Content> getContents() {
-//        return contents;
-//    }
+    public Map<Integer, Content> getContents() {
+        return contents;
+    }
 
     
     
@@ -216,5 +210,11 @@ public final class User {
         result.close();
 
         return loaded;
+    }
+
+    private void loadContents(DBConnector databaseConnection) throws Exception {
+        getAllAppsByUser(databaseConnection);
+        getAllMusicsByUser(databaseConnection);
+        getAllVideosByUser(databaseConnection);
     }
 }
