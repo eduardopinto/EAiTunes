@@ -1,8 +1,9 @@
 package itunes;
 
-import classes.ConcreteCreator;
 import classes.Content;
 import classes.User;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,22 +32,21 @@ public class EAiTunes {
     //users
     public User getUserById(int userId) throws Exception {
         User user = null;
-        if (this.users.containsKey(userId)) {
-            user = this.users.get(userId);
-        } else {
-            if (databaseConnection.isConnected()) {
-                try {
-                    User tmp = new User(userId);
-                    if (tmp.load(databaseConnection)) {
-                        this.users.put(tmp.getUserId(), tmp);
-                        user = tmp;
-                    }
-                } catch (Exception e) {
-                    throw new Exception(e);
+        if (databaseConnection.isConnected()) {
+            try {
+
+                String query = "select * from user where userId = " + userId;
+                PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
+                ResultSet result = preparedStatement.executeQuery();
+                if (result.next()) {
+                    user = new User(result.getString("firstName"), result.getString("lastName"));
                 }
-            } else {
-                throw new Exception(DATABASE_ERROR);
+                result.close();
+            } catch (Exception e) {
+                throw new Exception(e);
             }
+        } else {
+            throw new Exception(DATABASE_ERROR);
         }
         return user;
     }
@@ -56,10 +56,12 @@ public class EAiTunes {
         if (databaseConnection.isConnected()) {
             try {
                 User newUser = new User(firstName, lastName);
-                if (newUser.persist(databaseConnection)) {
-                    this.users.put(newUser.getUserId(), newUser);
-                    added = true;
-                }
+                String query = " insert into User (firstName, lastName) values (?, ?)";
+                PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
+                preparedStatement.setString(1, newUser.getFirstName());
+                preparedStatement.setString(2, newUser.getLastName());
+                preparedStatement.execute();
+                added = true;
             } catch (Exception e) {
                 throw new Exception(e);
             }
@@ -69,64 +71,18 @@ public class EAiTunes {
         return added;
     }
 
-    public boolean deleteUser(int userId) throws Exception {
-        boolean deleted = false;
-        if (databaseConnection.isConnected()) {
-            try {
-                if (loadUser(userId)) {
-                    if (this.users.get(userId).delete(databaseConnection)) {                    
-                        this.users.remove(userId);
-                        deleted = true;
-                    }
-                }
-            } catch (Exception e) {
-                throw new Exception(e);
-            }
-        } else {
-            throw new Exception(DATABASE_ERROR);
-        }
-        return deleted;
+    public User deleteUser(int userId) {
+        return null;
     }
 
-    public boolean updateUser(int userId, String firstName, String lastName) throws Exception {
-        boolean updated = false;
-        if (databaseConnection.isConnected()) {
-            try {
-                if (loadUser(userId)) {
-                    this.users.get(userId).setFirstName(firstName);
-                    this.users.get(userId).setLastName(lastName);
-                    if (this.users.get(userId).update(databaseConnection)) {
-                        updated = true;
-                    }
-                }
-            } catch (Exception e) {
-                throw new Exception(e);
-            }
-        } else {
-            throw new Exception(DATABASE_ERROR);
-        }
-        return updated;
+    public boolean updateUser(int userId, String firstName, String lastName) {
+        return true;
     }
 
-    private boolean loadUser(int userId) throws Exception {
-        boolean loaded = false;
-        if (!this.users.containsKey(userId)) {
-            if (this.getUserById(userId) != null) {
-                loaded = true;
-            }
-        }
-        return loaded;
+    public HashMap<Integer, User> getAllUsers() {
+        return null;
     }
 
-    /*
-     * Create Content
-    */
-    public void createContent(String contentType, Object[] content)
-    {
-        ConcreteCreator factory = new ConcreteCreator();
-        factory.factoryMethod(contentType, content);
-    }
-            
     //music
     public Content getMusicById(int musicId) {
         return null;
