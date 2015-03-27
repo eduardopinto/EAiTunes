@@ -274,8 +274,22 @@ public class EAiTunes {
     }
 
     //all conntents - cascade delete
-    public Content deleteContent(int contentId) {
-        return null;
+    public boolean deleteContent(String contentType, int contentId) throws Exception {
+         boolean deleted = false;
+        if (databaseConnection.isConnected()) {
+            try {
+                loadContent(contentType, contentId);
+                if (this.contents.get(contentId).delete(databaseConnection)) {
+                    this.contents.remove(contentId);
+                    deleted = true;
+                }
+            } catch (Exception e) {
+                throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return deleted;
     }
 
     //buys
