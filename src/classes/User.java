@@ -1,5 +1,8 @@
 package classes;
 
+import content.App;
+import content.Music;
+import content.Video;
 import itunes.DBConnector;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +10,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,6 +33,7 @@ public final class User {
 
     public User(int userId) {
         this.userId = userId;
+        this.contents = new HashMap<>();
     }
 
     public User(String firstName, String lastName) throws Exception {
@@ -78,16 +84,6 @@ public final class User {
         return content;
     }
 
-    public boolean createBuy(int id, Content content) {
-        boolean created = true;
-        this.contents.put(id, content);
-
-        if (contents.containsKey(id)) {
-            created = true;
-        }
-        return created;
-    }
-
     private boolean isValidName(String name) {
         return name != null && !name.trim().equals("");
     }
@@ -114,7 +110,6 @@ public final class User {
         String query = "UPDATE User SET firstName = '" + this.getFirstName() + "', lastName = '" + this.getLastName() + "' WHERE userId=" + this.userId;
 
         PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
-
         preparedStatement.execute();
         updated = true;
 
@@ -141,10 +136,85 @@ public final class User {
         if (result.next()) {
             this.firstName = result.getString("firstName");
             this.lastName = result.getString("lastName");
+            loadContents();
             loaded = true;
-
             result.close();
         }
+        return loaded;
+    }
+
+    private boolean loadContents() {
+        return false;
+
+    }
+
+    public boolean buyContent(DBConnector databaseConnection, int contentId) throws SQLException {
+        boolean added = false;
+        String query = " INSERT INTO Buy (userId, contentId) VALUES (?, ?)";
+
+        PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
+        preparedStatement.setInt(1, this.getUserId());
+        preparedStatement.setInt(2, contentId);
+        preparedStatement.execute();
+        added = true;
+
+        return added;
+    }
+
+//    public Map<Integer, Content> getContents() {
+//        return contents;
+//    }
+
+    
+    
+    public boolean getAllAppsByUser(DBConnector databaseConnection) throws Exception {
+        boolean loaded = false;
+        String query = "SELECT * from app a, content c, buy b where b.userId = " + this.userId + " and b.contentId = c.contentId and c.contentId = a.appId";
+
+        PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
+        ResultSet result = preparedStatement.executeQuery();
+        
+        while (result.next()) {
+            Content c = new App(result.getString("description"), result.getString("publisher"), result.getString("name"), result.getFloat("price"));
+            this.contents.put(result.getInt("appId"), c);
+        }
+        loaded = true;
+        result.close();
+
+        return loaded;
+    }
+    
+    public boolean getAllMusicsByUser(DBConnector databaseConnection) throws Exception {
+        boolean loaded = false;
+        String query = "SELECT * from music a, content c, buy b where b.userId = " + this.userId + " and b.contentId = c.contentId and c.contentId = a.musicId";
+
+        PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
+        ResultSet result = preparedStatement.executeQuery();
+        
+        while (result.next()) {
+            Content c = new Music(result.getInt("duration"), result.getString("publisher"), result.getString("name"), result.getFloat("price"));
+            this.contents.put(result.getInt("musicId"), c);
+        }
+        loaded = true;
+        result.close();
+
+        return loaded;
+    }
+    
+     public boolean getAllVideosByUser(DBConnector databaseConnection) throws Exception {
+        boolean loaded = false;
+        String query = "SELECT * from video a, content c, buy b where b.userId = " + this.userId + " and b.contentId = c.contentId and c.contentId = a.videoId";
+
+        PreparedStatement preparedStatement = databaseConnection.getConnection().prepareStatement(query);
+        ResultSet result = preparedStatement.executeQuery();
+        
+        while (result.next()) {
+            Content c = new Video(result.getString("resolution"), result.getString("publisher"), result.getString("name"), result.getFloat("price"));
+            this.contents.put(result.getInt("videoId"), c);
+        }
+        loaded = true;
+        result.close();
+
         return loaded;
     }
 }

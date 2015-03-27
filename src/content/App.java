@@ -2,6 +2,10 @@
 package content;
 
 import classes.Content;
+import itunes.DBConnector;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -26,5 +30,7 @@ public class App extends Content {
 
     public final void setDetails(String details) {
         this.details = details;
-    }    
+    }   
+    
+     
 }

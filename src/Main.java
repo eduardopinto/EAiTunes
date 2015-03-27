@@ -23,8 +23,11 @@ public class Main {
         EAiTunes itunes = new EAiTunes(db);
         
         try {
+            itunes.getUserById(16).getAllAppsByUser(db);
+            
+            
             //System.out.println(itunes.createUser("Nuno", "Gomes"));
-            System.out.println(itunes.updateUser(15, "Nass", "Gomes"));
+            //System.out.println(itunes.updateUser(15, "Nass", "Gomes"));
              //System.out.println(itunes.deleteUser(14));
            // User u = itunes.getUserById(13);
             //System.out.println(u.getFirstName());
