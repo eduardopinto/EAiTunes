@@ -29,9 +29,13 @@ public class Main {
         
         try
         {
+        // Erro
+        Object[] content = new Object[] { new String("erro")};
+        itunes.createContent("Objeto_nao_existente", content);
+        
         // send app creation request
-        Object[] content = new Object[] { new String("Aplicacao de calculo"), new String("Microsoft"),new String("Excel"), new Float(34)};
-        itunes.createContent("App", content);
+        Object[] content1 = new Object[] { new String("Aplicacao de calculo"), new String("Microsoft"),new String("Excel"), new Float(34)};
+        itunes.createContent("App", content1);
         
         // send music creation request
         Object[] content2 = new Object[] { new Integer(342), new String("Royksopp"),new String("I had this thing"), new Float(2)};

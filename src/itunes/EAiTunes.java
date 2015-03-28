@@ -141,9 +141,16 @@ public class EAiTunes {
             try {
                 ConcreteCreator factory = new ConcreteCreator();
                 Content content_aux = factory.factoryMethod(contentType, content);
-                if (content_aux.persist(databaseConnection)) {
-                    this.contents.put(content_aux.getContentId(), content_aux);
-                    added = true;
+                if (content_aux == null)
+                {
+                    System.out.println("Erro na criacao do Objeto, verifique os campos");
+                }
+                else
+                {
+                    if (content_aux.persist(databaseConnection)) {
+                        this.contents.put(content_aux.getContentId(), content_aux);
+                        added = true;
+                    }
                 }
             } catch (Exception e) {
                  throw new Exception(e);
