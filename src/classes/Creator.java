@@ -2,5 +2,5 @@
 package classes;
 
 public abstract class Creator {
-    public void factoryMethod(String contentType, Object[] content){}
+    public abstract Content factoryMethod(String contentType, Object[] content);
 }

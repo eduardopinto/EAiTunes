@@ -135,9 +135,23 @@ public class EAiTunes {
     /*
      * Create Content
      */
-    public void createContent(String contentType, Object[] content) {
-        ConcreteCreator factory = new ConcreteCreator();
-        factory.factoryMethod(contentType, content);
+    public boolean createContent(String contentType, Object[] content) throws Exception {
+        boolean added = false;
+        if (databaseConnection.isConnected()) {
+            try {
+                ConcreteCreator factory = new ConcreteCreator();
+                Content content_aux = factory.factoryMethod(contentType, content);
+                if (content_aux.persist(databaseConnection)) {
+                    this.contents.put(content_aux.getContentId(), content_aux);
+                    added = true;
+                }
+            } catch (Exception e) {
+                 throw new Exception(e);
+            }
+        } else {
+            throw new Exception(DATABASE_ERROR);
+        }
+        return added;
     }
 
     //music
