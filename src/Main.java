@@ -32,15 +32,15 @@ public class Main {
 //            itunes.createContent("Invalid type", content);
 
             // send app creation request
-            Object[] content1 = new Object[]{new String("Aplicacao de calculo"), new String("Microsoft"), new String("Excel"), new Float(34)};
+            Object[] content1 = new Object[]{new String("Aplicacao de calculo2"), new String("Microsoft"), new String("Excel"), new Float(34)};
             itunes.createContent("App", content1);
 
             // send music creation request
-            Object[] content2 = new Object[]{new Integer(342), new String("Royksopp"), new String("I had this thing"), new Float(2)};
+            Object[] content2 = new Object[]{new Integer(342), new String("Royksopp2"), new String("I had this thing"), new Float(2)};
             itunes.createContent("Music", content2);
 
             // send Video creation request
-            Object[] content3 = new Object[]{new String("800*600"), new String("Summit Entertainment"), new String("Memento"), new Float(13)};
+            Object[] content3 = new Object[]{new String("800*600"), new String("Summit Entertainment2"), new String("Memento"), new Float(13)};
             itunes.createContent("Video", content3);
 
 //            Collection<Content> contentsByUserId = itunes.getContentsByUserId(16);

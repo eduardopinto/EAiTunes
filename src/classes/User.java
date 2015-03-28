@@ -59,7 +59,6 @@ public final class User {
         } else {
             throw new Exception(INVALID_FIRST_NAME);
         }
-
     }
 
     public String getLastName() {

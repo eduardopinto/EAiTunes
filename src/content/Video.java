@@ -15,6 +15,8 @@ import java.sql.ResultSet;
  */
 public class Video extends Content {
 
+    private final static String INVALID_VIDEO_RESOLUTION = "Invalid Video Resolution";
+    
     private String resolution;
 
     public Video(String resolution, String publisher, String name, float price) throws Exception {
@@ -30,8 +32,12 @@ public class Video extends Content {
         return resolution;
     }
 
-    public final void setResolution(String resolution) {
-        this.resolution = resolution;
+    public final void setResolution(String resolution) throws Exception {
+        if (resolution.isEmpty() || resolution == null){
+            throw new Exception(INVALID_VIDEO_RESOLUTION);
+        } else {
+            this.resolution = resolution;
+        }
     }
 
     @Override

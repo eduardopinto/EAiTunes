@@ -14,7 +14,9 @@ import java.sql.ResultSet;
  *
  */
 public class Music extends Content {
-
+    
+    private final static String INVALID_MUSIC_DURATION = "Invalid Music Duration";
+    
     private int duration;
 
     public Music(int contentId) {
@@ -30,8 +32,12 @@ public class Music extends Content {
         return duration;
     }
 
-    public final void setDuration(int duration) {
-        this.duration = duration;
+    public final void setDuration(int duration) throws Exception {
+        if (duration <= 1 ){
+            throw new Exception(INVALID_MUSIC_DURATION);
+        } else {
+            this.duration = duration;
+        }
     }
 
     @Override

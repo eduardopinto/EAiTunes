@@ -15,6 +15,8 @@ import java.sql.ResultSet;
  */
 public class App extends Content {
 
+    private final static String INVALID_APP_DETAILS = "Invalid Application Details";
+    
     private String details;
 
     public App(int contentId) {
@@ -30,8 +32,12 @@ public class App extends Content {
         return details;
     }
 
-    public final void setDetails(String details) {
-        this.details = details;
+    public final void setDetails(String details) throws Exception {
+        if (details.isEmpty() || details == null){
+            throw new Exception(INVALID_APP_DETAILS);
+        } else {
+            this.details = details;
+        }
     }    
 
     @Override
