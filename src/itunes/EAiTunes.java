@@ -135,25 +135,20 @@ public class EAiTunes {
     /*
      * Create Content
      */
-    public boolean createContent(String contentType, Object[] content) throws Exception {
+    public boolean createContent(String contentType, Object[] contents) throws Exception {
         boolean added = false;
         if (databaseConnection.isConnected()) {
             try {
                 ConcreteCreator factory = new ConcreteCreator();
-                Content content_aux = factory.factoryMethod(contentType, content);
-                if (content_aux == null)
-                {
-                    System.out.println("Erro na criacao do Objeto, verifique os campos");
-                }
-                else
-                {
-                    if (content_aux.persist(databaseConnection)) {
-                        this.contents.put(content_aux.getContentId(), content_aux);
-                        added = true;
-                    }
+                Content content = factory.factoryMethod(contentType, contents);
+                if (content != null && content.persist(databaseConnection)) {
+                    this.contents.put(content.getContentId(), content);
+                    added = true;
+                } else {
+                    throw new Exception("Cannot create content type");
                 }
             } catch (Exception e) {
-                 throw new Exception(e);
+                throw new Exception(e);
             }
         } else {
             throw new Exception(DATABASE_ERROR);
@@ -296,7 +291,7 @@ public class EAiTunes {
 
     //all conntents - cascade delete
     public boolean deleteContent(String contentType, int contentId) throws Exception {
-         boolean deleted = false;
+        boolean deleted = false;
         if (databaseConnection.isConnected()) {
             try {
                 loadContent(contentType, contentId);
